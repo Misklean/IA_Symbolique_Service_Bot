@@ -11,7 +11,8 @@ This project is a Discord bot designed to recommend books based on user queries.
 Ensure you have Python 3.8 or later installed. Then, install the required libraries using pip:
 
 ```bash
-pip install discord.py python-dotenv google-cloud-dialogflow
+pip install discord.py python-dotenv openai==0.27.0
+
 ```
 
 ### Step 2: Create a `.env` File
@@ -22,6 +23,7 @@ Create a `.env` file in your project directory with the following content:
 DISCORD_TOKEN=yourDiscordToken
 PROJECT_ID=a-novel-a-day-boredom-at--ogfn
 GOOGLE_APPLICATION_CREDENTIALS=path/to/dialogflow-key.json
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 Replace `yourDiscordToken` with your actual Discord bot token and `path/to/dialogflow-key.json` with the path to your Dialogflow service account JSON key file.

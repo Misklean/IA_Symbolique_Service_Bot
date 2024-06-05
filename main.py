@@ -2,32 +2,45 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from google.cloud import dialogflow_v2 as dialogflow
-import uuid
+import openai
 
 # Load environment variables from .env file
 load_dotenv()
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-PROJECT_ID = os.getenv('PROJECT_ID')
-GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-# Set up Google Cloud credentials
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = GOOGLE_APPLICATION_CREDENTIALS
+# Initialize OpenAI
+openai.api_key = OPENAI_API_KEY
 
 # Set up Discord client
 intents = discord.Intents.default()
 intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Set up Dialogflow client
-session_client = dialogflow.SessionsClient()
+# Define the bot's personality
+BOT_PERSONALITY = """
+You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
+For general queries, you provide informative and relevant responses tailored to the user's inquiries.
+However, when asked for book recommendations, you switch to a specific format:
+"Name of the Book, lists of genres of the book, quick summary" followed by three book options.
+You excel at providing diverse book recommendations across various genres to cater to the user's interests.
+You always anszer in less than 150 characters.
+"""
 
-async def detect_intent_texts(project_id, session_id, text, language_code):
-    session = session_client.session_path(project_id, session_id)
-    text_input = dialogflow.TextInput(text=text, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-    response = session_client.detect_intent(request={"session": session, "query_input": query_input})
-    return response.query_result.fulfillment_text
+async def get_openai_response(prompt):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # Or use "gpt-4" if available
+            messages=[
+                {"role": "system", "content": BOT_PERSONALITY},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=150,
+            temperature=0.7,
+        )
+        return response.choices[0].message["content"].strip()
+    except openai.error.APIError:
+        return "I didn't understand that. Please try again later."
 
 @bot.event
 async def on_ready():
@@ -38,9 +51,10 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    session_id = str(uuid.uuid4())
-    response_text = await detect_intent_texts(PROJECT_ID, session_id, message.content, 'en-US')
-    await message.channel.send(response_text)
+    # Check if the bot is tagged in the message
+    if bot.user in message.mentions:
+        response_text = await get_openai_response(message.content)
+        await message.channel.send(response_text)
 
 # Run the bot
 bot.run(DISCORD_TOKEN)
