@@ -1,0 +1,26 @@
+# Ignore environment variable files
+.env
+
+# Ignore Dialogflow service account key file
+dialogflow-key.json
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore system files
+.DS_Store
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+
+# Ignore other unwanted files and directories
+*.log
+*.bak
+*.swp
