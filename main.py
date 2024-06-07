@@ -35,11 +35,24 @@ kernel.add_service(
     )
 )
 
-# Define the request settings for Semantic Kernel
-req_settings = kernel.get_prompt_execution_settings_from_service_id(service_id)
-req_settings.max_tokens = 150
-req_settings.temperature = 0.7
-req_settings.top_p = 0.8
+########################################################
+# CREATE BOT PERSONNALITY                              #
+########################################################
+
+BOT_PERSONALITY_PROMPT = """
+You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
+"""
+
+# Define the bot's personality for book recommendations
+BOOK_RECOMMENDATION_PROMPT = """
+You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
+When asked for book recommendations, you switch to a specific format:
+"Name of the Book, lists of genres of the book, quick summary" followed by three book options.
+You excel at providing diverse book recommendations across various genres to cater to the user's interests.
+Always answer in less than 150 characters.
+User preferences: {preferences}
+ChatGPT:
+"""
 
 ########################################################
 # DEFINE AND LOAD PLUGINS                              #
@@ -53,53 +66,33 @@ translate_function = plugin["Translate"]
 # DEFINE FUNCTIONS                                     #
 ########################################################
 
-# Function to get a response from OpenAI
-async def get_openai_response(prompt):
+# Function to get a response from OpenAI with bot personality
+async def get_openai_response(user_message):
+    prompt = f"{BOT_PERSONALITY_PROMPT}\nUser: {user_message}\nChatGPT:"
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are ChatGPT, a helpful and knowledgeable assistant."},
-            {"role": "user", "content": prompt}
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": user_message}
         ],
         max_tokens=150,
         temperature=0.7,
     )
     return response.choices[0].message.content.strip()
 
-# Function to generate book recommendations
-async def get_book_recommendations(preferences: str) -> str:
-    prompt = BOOK_RECOMMENDATION_PROMPT.format(preferences=preferences)
-    
-    prompt_template_config = PromptTemplateConfig(
-        template=prompt,
-        name="book_recommendation",
-        template_format="semantic-kernel",
-        execution_settings=req_settings,
+
+async def get_translation(input, lang):
+    translation = await kernel.invoke(
+        translate_function,
+        KernelArguments(input=input, lang=lang),
     )
 
-    function = kernel.add_function(
-        function_name="recommend_books",
-        plugin_name="book_recommendation_plugin",
-        prompt_template_config=prompt_template_config,
-    )
+    return translation
 
-    result = await kernel.invoke(function)
-    return result
+async def get_book_recommendation(input, lang):
+    input = input + " " + lang
 
-########################################################
-# CREATE BOT PERSONNALITY                              #
-########################################################
-
-# Define the bot's personality for book recommendations
-BOOK_RECOMMENDATION_PROMPT = """
-You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
-When asked for book recommendations, you switch to a specific format:
-"Name of the Book, lists of genres of the book, quick summary" followed by three book options.
-You excel at providing diverse book recommendations across various genres to cater to the user's interests.
-Always answer in less than 150 characters.
-User preferences: {preferences}
-ChatGPT:
-"""
+    return input
 
 ########################################################
 # SETUP DISCORD CLIENT                                 #
@@ -121,13 +114,14 @@ async def on_message(message):
 
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
-        # Extract the text to be translated
-        translation = await kernel.invoke(
-            translate_function,
-            KernelArguments(input=message.content, lang="German"),
-        )
-        print(translation)
-        await message.channel.send(translation)
+        if "bonjour" in message.content.lower():
+            translation = await get_translation(message.content, "French")
+            await message.channel.send(translation)
+        else:
+            # Get response from OpenAI with bot personality
+            response = await get_openai_response(message.content)
+            await message.channel.send(response)
+            
 
 # Run the bot
 bot.run(DISCORD_TOKEN)
