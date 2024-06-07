@@ -1,0 +1,25 @@
+{
+    "schema": 1,
+    "description": "Translate to French",
+    "execution_settings": {
+      "default": {
+        "max_tokens": 150,
+        "temperature": 0.7,
+        "top_p": 0.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0
+      }
+    },
+    "input_variables": [
+      {
+        "name": "input",
+        "description": "Sentence to translate",
+        "default": ""
+      },
+      {
+        "name": "lang",
+        "description": "The language to translate into",
+        "default": "French"
+      }
+    ]
+  }

@@ -1,0 +1,13 @@
+TRANSLATE THE FOLLOWING SENTENCE TO THE SPECIFIED LANGUAGE
+
+REFUSE IF IT IS:
+- SEXIST
+- RACIST
+- INSULTS suchs as (bastard, faggot, motherfucker, etc.)
+- OTHER BIAS/BIGOTRY
+
+MAKE A CORRECT TRANSLATION THAT CAN BE UNDERSTOOD BY A NATIVE SPEAKER
+The language you need to translate into is : {{$lang}}
++++++
+{{$input}}
++++++
