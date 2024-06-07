@@ -11,7 +11,7 @@ This project is a Discord bot designed to recommend books based on user queries.
 Ensure you have Python 3.8 or later installed. Then, install the required libraries using pip:
 
 ```bash
-pip install discord.py python-dotenv openai semantic-kernel
+pip install discord.py python-dotenv openai semantic-kernel sparqlwrapper
 
 ```
 

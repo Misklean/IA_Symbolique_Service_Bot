@@ -1,6 +1,6 @@
 {
     "schema": 1,
-    "description": "Translate to the specified language",
+    "description": "Create a query to fetch data from DBpedia",
     "execution_settings": {
       "default": {
         "max_tokens": 150,
@@ -13,13 +13,13 @@
     "input_variables": [
       {
         "name": "input",
-        "description": "Sentence to translate",
+        "description": "Preferences of the user",
         "default": ""
       },
       {
-        "name": "lang",
-        "description": "The language to translate into",
-        "default": "French"
+        "name": "genres",
+        "description": "All available genres",
+        "default": ""
       }
     ]
   }

@@ -8,6 +8,7 @@ from semantic_kernel import Kernel
 from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion
 from semantic_kernel.prompt_template import PromptTemplateConfig
 from semantic_kernel.functions import KernelArguments
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 ########################################################
 # LOAD AND INITIALIZE                                  #
@@ -35,6 +36,8 @@ kernel.add_service(
     )
 )
 
+genres = []
+
 ########################################################
 # CREATE BOT PERSONNALITY                              #
 ########################################################
@@ -58,9 +61,14 @@ ChatGPT:
 # DEFINE AND LOAD PLUGINS                              #
 ########################################################
 
-plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="TestingPlugin")
+transalte_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="TestingPlugin")
+bookrec_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="BookRecommendationPlugin")
 
-translate_function = plugin["Translate"]
+translate_function = transalte_plugin["Translate"]
+create_query_function = bookrec_plugin["CreateQuery"]
+process_query_function = bookrec_plugin["ProcessQuery"]
+
+# NEED TO GET THE OTHER PLUGINS TO DIFFRENTIATE AUTHOR AND GENRE
 
 ########################################################
 # DEFINE FUNCTIONS                                     #
@@ -84,15 +92,81 @@ async def get_openai_response(user_message):
 async def get_translation(input, lang):
     translation = await kernel.invoke(
         translate_function,
-        KernelArguments(input=input, lang=lang),
+        KernelArguments(input=input, lang=lang)
     )
 
     return translation
 
-async def get_book_recommendation(input, lang):
-    input = input + " " + lang
+async def get_query(input):
+    query = await kernel.invoke(
+        create_query_function,
+        KernelArguments(input=input, genres=genres)
+    )
 
-    return input
+    return query
+
+def get_books_by_query(query):
+    # Create a SPARQLWrapper instance
+    sparql = SPARQLWrapper("http://dbpedia.org/sparql")
+
+    # Convert query to Unicode string
+    query = str(query)
+
+    # Set the query
+    sparql.setQuery(query)
+
+    # Set the return format
+    sparql.setReturnFormat(JSON)
+
+    # Execute the query and parse the results
+    results = sparql.query().convert()
+
+    books = []
+    for result in results["results"]["bindings"]:
+        book_title = result["title"]["value"]
+        books.append(book_title)
+
+    return books
+
+async def get_processed_query(input):
+    summary = await kernel.invoke(
+        process_query_function,
+        KernelArguments(input=input)
+    )
+
+    return summary
+
+async def get_book_recommendation(input):
+    query = await get_query(input)
+    books = get_books_by_query(query)
+    summary = await get_processed_query(books)
+
+    return summary
+
+def get_genres():
+    sparql = SPARQLWrapper("https://dbpedia.org/sparql")
+    query = """
+    SELECT ?genre ?genreLabel (COUNT(?book) AS ?bookCount)
+    WHERE {
+    ?book a dbo:Book .
+    ?book dbo:literaryGenre ?genre .
+    ?genre rdfs:label ?genreLabel .
+    FILTER (lang(?genreLabel) = 'en')
+    }
+    GROUP BY ?genre ?genreLabel
+    ORDER BY DESC(?bookCount)
+    LIMIT 50
+    """
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    
+    genre_labels = []
+    for result in results["results"]["bindings"]:
+        genre_label = result["genreLabel"]["value"]
+        genre_labels.append(genre_label)
+    
+    return genre_labels
 
 ########################################################
 # SETUP DISCORD CLIENT                                 #
@@ -105,6 +179,9 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
+    global genres
+    # Call the function and print the list of genres
+    genres = get_genres()
     print(f'Logged in as {bot.user}!')
 
 @bot.event
@@ -119,9 +196,8 @@ async def on_message(message):
             await message.channel.send(translation)
         else:
             # Get response from OpenAI with bot personality
-            response = await get_openai_response(message.content)
-            await message.channel.send(response)
+            summary = await get_book_recommendation(message.content)
+            await message.channel.send(summary)
             
-
-# Run the bot
+# Run the bot1
 bot.run(DISCORD_TOKEN)

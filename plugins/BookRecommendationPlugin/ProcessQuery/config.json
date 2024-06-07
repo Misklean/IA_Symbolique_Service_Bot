@@ -1,6 +1,6 @@
 {
     "schema": 1,
-    "description": "Translate to the specified language",
+    "description": "use data from a query to create a book recommendation",
     "execution_settings": {
       "default": {
         "max_tokens": 150,
@@ -13,13 +13,8 @@
     "input_variables": [
       {
         "name": "input",
-        "description": "Sentence to translate",
+        "description": "response form the request",
         "default": ""
-      },
-      {
-        "name": "lang",
-        "description": "The language to translate into",
-        "default": "French"
       }
     ]
   }

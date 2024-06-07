@@ -1,0 +1,37 @@
+DECIDE IF THE FOLLOWING INPUT IS THE PREFERENCE ABOUT THE USER ABOUT A SPECIFIC AUTHOR OR GENRES.
+
+Exemple 1:
+Input : I want to know the work of Guy De Maupassant
+Output : AUTHOR
+
+Exemple 2: 
+Input : I really want a scary movie
+Output : GENRE
+
+Exemple 3:
+Input: I'm a big fan of J. K. Rowling
+Output: AUTHOR
+
+Exemple 4:
+Input: I enjoy reading mystery novels
+Output: GENRE
+
+Exemple 5:
+Input: I want to explore the works of Victor Hugo
+Output: AUTHOR
+
+Exemple 6:
+Input: I love fantasy books
+Output: GENRE
+
+Exemple 7:
+Input: Rick Riordan is my favorite author
+Output: AUTHOR
+
+Exemple 8:
+Input: I'm in the mood for a romantic movie
+Output: GENRE
+
++++++
+{{$input}}
++++++
