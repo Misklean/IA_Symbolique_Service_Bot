@@ -39,25 +39,6 @@ kernel.add_service(
 genres = []
 
 ########################################################
-# CREATE BOT PERSONNALITY                              #
-########################################################
-
-BOT_PERSONALITY_PROMPT = """
-You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
-"""
-
-# Define the bot's personality for book recommendations
-BOOK_RECOMMENDATION_PROMPT = """
-You are ChatGPT, a helpful and knowledgeable assistant always ready to assist users with their questions.
-When asked for book recommendations, you switch to a specific format:
-"Name of the Book, lists of genres of the book, quick summary" followed by three book options.
-You excel at providing diverse book recommendations across various genres to cater to the user's interests.
-Always answer in less than 150 characters.
-User preferences: {preferences}
-ChatGPT:
-"""
-
-########################################################
 # DEFINE AND LOAD PLUGINS                              #
 ########################################################
 
@@ -70,34 +51,9 @@ create_author_query_function = bookrec_plugin["CreateAuthorQuery"]
 process_query_function = bookrec_plugin["ProcessQuery"]
 genre_or_author_function = bookrec_plugin["GenreOrAuthor"]
 
-# NEED TO GET THE OTHER PLUGINS TO DIFFRENTIATE AUTHOR AND GENRE
-
 ########################################################
 # DEFINE FUNCTIONS                                     #
 ########################################################
-
-# Function to get a response from OpenAI with bot personality
-async def get_openai_response(user_message):
-    prompt = f"{BOT_PERSONALITY_PROMPT}\nUser: {user_message}\nChatGPT:"
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": user_message}
-        ],
-        max_tokens=150,
-        temperature=0.7,
-    )
-    return response.choices[0].message.content.strip()
-
-
-async def get_translation(input, lang):
-    translation = await kernel.invoke(
-        translate_function,
-        KernelArguments(input=input, lang=lang)
-    )
-
-    return translation
 
 async def get_genre_query(input):
     query = await kernel.invoke(
@@ -219,13 +175,9 @@ async def on_message(message):
 
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
-        if "bonjour" in message.content.lower():
-            translation = await get_translation(message.content, "French")
-            await message.channel.send(translation)
-        else:
-            # Get response from OpenAI with bot personality
-            summary = await get_book_recommendation(message.content)
-            await message.channel.send(summary)
+        # Get response from OpenAI with bot personality
+        summary = await get_book_recommendation(message.content)
+        await message.channel.send(summary)
             
 # Run the bot1
 bot.run(DISCORD_TOKEN)
