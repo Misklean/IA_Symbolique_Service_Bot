@@ -45,7 +45,7 @@ WHERE {
   ?book rdfs:label ?title .
   FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "REPLACE WITH GENRE TO BE FOUND"))
 }
-LIMIT 10
+LIMIT 50
 ```
 
 RETURN ONLY THE QUERY THAT CAN BE DIRECTLY USED AS IT IS
@@ -62,7 +62,7 @@ WHERE {
   ?book rdfs:label ?title .
   FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Children's Literature"))
 }
-LIMIT 10
+LIMIT 50
 
 Exemple 2:
 Input: "I love scary book"
@@ -75,7 +75,7 @@ WHERE {
   ?book rdfs:label ?title .
   FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Horror"))
 }
-LIMIT 10
+LIMIT 50
 
 IF YOU FIND MULTIPLE GENRES, USE THIS TEMPLATE :
 
@@ -88,7 +88,7 @@ WHERE {
   ?book rdfs:label ?title .
   FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && (CONTAINS(LCASE(?genreLabel), "GENRE 1") || CONTAINS(LCASE(?genreLabel), "GENRE 2")))
 }
-LIMIT 10
+LIMIT 50
 ```
 
 DO NOT SEND THE IMPORTANT INFORMATION AND THE GENRE

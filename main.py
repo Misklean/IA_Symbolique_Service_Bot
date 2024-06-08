@@ -65,8 +65,10 @@ transalte_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="Te
 bookrec_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="BookRecommendationPlugin")
 
 translate_function = transalte_plugin["Translate"]
-create_query_function = bookrec_plugin["CreateQuery"]
+create_genre_query_function = bookrec_plugin["CreateGenreQuery"]
+create_author_query_function = bookrec_plugin["CreateAuthorQuery"]
 process_query_function = bookrec_plugin["ProcessQuery"]
+genre_or_author_function = bookrec_plugin["GenreOrAuthor"]
 
 # NEED TO GET THE OTHER PLUGINS TO DIFFRENTIATE AUTHOR AND GENRE
 
@@ -97,10 +99,19 @@ async def get_translation(input, lang):
 
     return translation
 
-async def get_query(input):
+async def get_genre_query(input):
     query = await kernel.invoke(
-        create_query_function,
+        create_genre_query_function,
         KernelArguments(input=input, genres=genres)
+    )
+    
+    return query
+
+
+async def get_author_query(input):
+    query = await kernel.invoke(
+        create_author_query_function,
+        KernelArguments(input=input)
     )
     print(query)
     return query
@@ -125,7 +136,7 @@ def get_books_by_query(query):
     for result in results["results"]["bindings"]:
         book_title = result["title"]["value"]
         books.append(book_title)
-    print(books)
+    
     return books
 
 async def get_processed_query(input):
@@ -133,12 +144,29 @@ async def get_processed_query(input):
         process_query_function,
         KernelArguments(input=input)
     )
-    print(summary)
+    
     return summary
 
+async def get_preference_type(input):
+    pref_type = await kernel.invoke(
+        genre_or_author_function,
+        KernelArguments(input=input)
+    )
+    
+    return str(pref_type)
+
 async def get_book_recommendation(input):
-    query = await get_query(input)
+    pref_type = await get_preference_type(input)
+    if pref_type == "AUTHOR":
+        query = await get_author_query(input)
+    elif pref_type == "GENRE":
+        query = await get_genre_query(input)
+    else:
+        return "Please only talk about Books with me <3"
+    
     books = get_books_by_query(query)
+    if len(books) == 0:
+        return "I did not find any book recommendations, please more precise with authors, and borader with genres. <3"
     summary = await get_processed_query(books)
 
     return summary
