@@ -1,94 +1,36 @@
-FIND THE IMPORTANT INFORMATION RELATED TO THE PREFERENCES SPECIFIED IN THE input
+DECIDE IF THE FOLLOWING INPUT IS THE PREFERENCE ABOUT THE USER ABOUT A SPECIFIC AUTHOR OR GENRES.
 
 Exemple 1:
-INPUT : "I want a book related to Erin Hunter"
-IMPORTANT INFORMATION : "Erin Hunter"
+Input : I want to know the work of Guy De Maupassant
+Output : AUTHOR
 
-Exemple 2:
-INPUT : "I like fantasy, comedy and horror books"
-IMPORTANT INFORMATION : "fantasy, comedy, horror"
+Exemple 2: 
+Input : I really want a scary movie
+Output : GENRE
 
-Example 3:
-Input: "I'm interested in historical fiction novels."
-Important Information: "historical fiction"
+Exemple 3:
+Input: I'm a big fan of J. K. Rowling
+Output: AUTHOR
 
-Example 4:
-Input: "Can you recommend a mystery thriller by Agatha Christie?"
-Important Information: "mystery thriller, Agatha Christie"
+Exemple 4:
+Input: I enjoy reading mystery novels
+Output: GENRE
 
-Example 5:
-Input: "I'm looking for science fiction books with time travel themes."
-Important Information: "science fiction, time travel"
+Exemple 5:
+Input: I want to explore the works of Victor Hugo
+Output: AUTHOR
 
-Example 6:
-Input: "I want to read a classic romance novel."
-Important Information: "classic romance"
+Exemple 6:
+Input: I love fantasy books
+Output: GENRE
 
-AFTER FINDING THE IMPORTANT INFORMATION, GIVE THE ONE GENRE IT RELATES TO THE MOST IN THIS LIST:
-[fantasy, thriller, fiction, comedy, children's literature, non-fiction, mystery, crime, horror, adventure, romance, historical, drama, biography, autobiography, memoir, reference, poetry, essay, travel, anthology, comics, philosophy, religion, history, sagas, western, utopian, dystopian, spy, humor, erotica, musical, anthropology, magic, fairy tale, cookbook, art, dance, crafts, self-help, health, fitness, parenting, education, fashion, architecture, design, photography, film, action]
+Exemple 7:
+Input: Rick Riordan is my favorite author
+Output: AUTHOR
 
-IF YOU DO NOT FIND A GENRE THAT RELATES ENOUGH, JUST ANSWER "NOT FOUND" AND NOTHING ELSE
-
-Example 1:
-Input: "I want to learn to code"
-Answer: "Not Found"
-
-AFTER GETTING THE ONE GENRE IT RELATES TO THE MOST, USE THIS TEMPLATE TO CREATE A SPARQL QUERY:
-
-```
-SELECT ?book ?title
-WHERE {
-  ?book a dbo:Book .
-  ?book dbo:literaryGenre ?genre .
-  ?genre rdfs:label ?genreLabel .
-  ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "REPLACE WITH GENRE TO BE FOUND"))
-}
-LIMIT 10
-```
-
-RETURN ONLY THE QUERY THAT CAN BE DIRECTLY USED AS IT IS
-DO NOT RETURN ANYTHING OTHER THAN THE QUERY
-
-Example 1:
-Input: "I want something for my child"
-Output: 
-SELECT ?book ?title
-WHERE {
-  ?book a dbo:Book .
-  ?book dbo:literaryGenre ?genre .
-  ?genre rdfs:label ?genreLabel .
-  ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Children's Literature"))
-}
-LIMIT 10
-
-Exemple 2:
-Input: "I love scary book"
-Ouput:
-SELECT ?book ?title
-WHERE {
-  ?book a dbo:Book .
-  ?book dbo:literaryGenre ?genre .
-  ?genre rdfs:label ?genreLabel .
-  ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Horror"))
-}
-LIMIT 10
-
-IF YOU FIND MULTIPLE GENRES, USE THIS TEMPLATE :
-
-```
-SELECT ?book ?title
-WHERE {
-  ?book a dbo:Book .
-  ?book dbo:literaryGenre ?genre .
-  ?genre rdfs:label ?genreLabel .
-  ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && (CONTAINS(LCASE(?genreLabel), "GENRE 1") || CONTAINS(LCASE(?genreLabel), "GENRE 2")))
-}
-LIMIT 10
-```
+Exemple 8:
+Input: I'm in the mood for a romantic movie
+Output: GENRE
 
 +++++
 {{$input}}

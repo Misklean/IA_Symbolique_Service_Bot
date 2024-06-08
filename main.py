@@ -32,7 +32,7 @@ service_id = "chat-gpt"
 kernel.add_service(
     OpenAIChatCompletion(
         service_id=service_id,
-        ai_model_id='gpt-4'
+        ai_model_id='gpt-3.5-turbo-0125'
     )
 )
 
@@ -78,7 +78,7 @@ process_query_function = bookrec_plugin["ProcessQuery"]
 async def get_openai_response(user_message):
     prompt = f"{BOT_PERSONALITY_PROMPT}\nUser: {user_message}\nChatGPT:"
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo-0125",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": user_message}
@@ -102,7 +102,7 @@ async def get_query(input):
         create_query_function,
         KernelArguments(input=input, genres=genres)
     )
-
+    print(query)
     return query
 
 def get_books_by_query(query):
@@ -125,7 +125,7 @@ def get_books_by_query(query):
     for result in results["results"]["bindings"]:
         book_title = result["title"]["value"]
         books.append(book_title)
-
+    print(books)
     return books
 
 async def get_processed_query(input):
@@ -133,7 +133,7 @@ async def get_processed_query(input):
         process_query_function,
         KernelArguments(input=input)
     )
-
+    print(summary)
     return summary
 
 async def get_book_recommendation(input):
