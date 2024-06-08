@@ -1,0 +1,15 @@
+YOU HAVE 2 LIST OF TITLES AND A USER MESSAGE OF THE FORMAT:
+user message: I want a action and romance book written by J.K Rowling. Title from DBPedia : [Renegade - Leonard_Carpenter]. Title from google book : ['Point of Betrayal - Don Pendleton', 'Action - Martin Barker', 'Une place à prendre - J. K. Rowling', 'Harry Potter et l’Ordre du Phénix - J.K. Rowling']
+
+Out of them, pick 3 books that are likely to fit the user and then add 1 that you recommend yourself and source it as GPT
+
+Return then as 
+Title - Author: Title - Author
+Genre : ... 
+Summary : ... (One sentence)
+Why it could fit you : ... (One sentence)
+Source: DBpedia or Google_Book or GPT
+
++++++
+{{$input}}
++++++

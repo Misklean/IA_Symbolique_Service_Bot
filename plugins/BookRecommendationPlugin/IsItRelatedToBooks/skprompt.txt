@@ -1,0 +1,64 @@
+Find if the user wants a book
+
+Exemple 1:
+INPUT : "I want a book related to Erin Hunter"
+True
+
+Exemple 2:
+INPUT : "I like fantasy, comedy and horror books"
+True
+
+Example 3:
+Input: "I'm interested in historical fiction novels."
+True
+
+Example 4:
+Input: "I want to go outside"
+False
+
+Example 5:
+Input: "I want to learn coding"
+True
+Example 6:
+Input: "Can you recommend a good detective story?"
+True
+
+Example 7:
+Input: "I'm looking for some good science fiction to read."
+True
+
+Example 8:
+Input: "Let's discuss the latest movies."
+False
+
+Example 9:
+Input: "I'm interested in hiking and outdoor activities."
+False
+
+Example 10:
+Input: "I need information on software development."
+True
+
+Example 11:
+Input: "What's the best way to travel to Europe?"
+False
+
+Example 12:
+Input: "I'm thinking about starting a vegetable garden."
+False
+
+Example 13:
+Input: "Could you help me find some cookbooks?"
+True
+
+Example 14:
+Input: "Tell me more about the latest technology trends."
+False
+
+Example 15:
+Input: "I'm into thrillers and mystery novels."
+True
+
++++++
+{{$input}}
++++++

@@ -1,0 +1,37 @@
+FIND THE IMPORTANT INFORMATION RELATED TO THE PREFERENCES SPECIFIED IN THE input (genre and author)
+
+Exemple 1:
+INPUT : "I want a book related to Erin Hunter"
+IMPORTANT INFORMATION : "Erin Hunter"
+
+Exemple 2:
+INPUT : "I like fantasy, comedy and horror books"
+IMPORTANT INFORMATION : "fantasy, comedy, horror"
+
+Example 3:
+Input: "I'm interested in historical fiction novels."
+Important Information: "historical fiction"
+
+Example 4:
+Input: "Can you recommend a mystery thriller by Agatha Christie?"
+Important Information: "mystery thriller, Agatha Christie"
+
+Example 5:
+Input: "I'm looking for science fiction books with time travel themes."
+Important Information: "science fiction, time travel"
+
+Example 6:
+Input: "I want to read a classic romance novel."
+Important Information: "classic romance"
+
+Example 7:
+Input: "I want to learn to code"
+Important Information: ""
+
+return these information in the format
+Exemple 1: Genre : [horror,romance,...], Author : [Steve, Bob,...]
+Exemple 2: Genre : [horror] Author : []
+Exemple 3: Genre : [], Author : [Steve, Bob]
++++++
+{{$input}}
++++++

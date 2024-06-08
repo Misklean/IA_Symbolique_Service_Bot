@@ -1,0 +1,25 @@
+{
+    "schema": 1,
+    "description": "Create to debate on which title to give to the user",
+    "execution_settings": {
+      "default": {
+        "max_tokens": 500,
+        "temperature": 0.7,
+        "top_p": 0.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0
+      }
+    },
+    "input_variables": [
+      {
+        "name": "input",
+        "description": "Preferences of the user",
+        "default": ""
+      },
+      {
+        "name": "genres",
+        "description": "All available genres",
+        "default": ""
+      }
+    ]
+  }
