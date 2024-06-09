@@ -78,6 +78,7 @@ create_author_query_function = bookrec_plugin["CreateAuthorQuery"]
 process_query_function = bookrec_plugin["ProcessQuery"]
 AuthAndGenre = bookrec_plugin["GetAuthorsAndGenre"]
 GiveBackBest = bookrec_plugin["Debate"]
+ISITABOOK = bookrec_plugin["IsItRelatedToBooks"]
 # NEED TO GET THE OTHER PLUGINS TO DIFFRENTIATE AUTHOR AND GENRE
 
 ########################################################
@@ -209,6 +210,14 @@ async def get_author_and_genre(input):
 
     return str(translation)
 
+async def IsBookRelated(input):
+    translation = await kernel.invoke(
+        ISITABOOK,
+        KernelArguments(input=input)
+    )
+
+    return str(translation)
+
 async def FinalAnswer(input):
     translation = await kernel.invoke(
         GiveBackBest,
@@ -304,21 +313,26 @@ async def on_message(message):
 
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
-        user_id = message.author.id
+        is_related = await IsBookRelated(message.content)
+        if is_related == "True1":
+            user_id = message.author.id
+            if user_id not in user_recommendations:
+                user_recommendations[user_id] = []
 
-        if user_id not in user_recommendations:
-            user_recommendations[user_id] = []
+            end = await book_recommendation(message.content, user_id)
 
-        end = await book_recommendation(message.content, user_id)
+            # Extract books from summary
+            recommended_books = extract_books_from_summary(end)
 
-        # Extract books from summary
-        recommended_books = extract_books_from_summary(end)
-
-        # Update user recommendations
-        user_recommendations[user_id].extend(book.lower() for book in recommended_books)
-        print(user_recommendations[user_id])
-
-        await message.channel.send(end)
+            # Update user recommendations
+            user_recommendations[user_id].extend(book.lower() for book in recommended_books)
+            print(user_recommendations[user_id])
+        else:
+            if is_related == "True2":
+                end = "I will need more details to give you a book recommendation. Please provide me with genres or authors you like. Or a summary of what you are looking for."
+            else:
+                end = "I am sorry, I am not able to help you with that. I a a book recommender bot."
+        await message.channel.send("Reply to: "+ message.author.name + "\n"+ end)
             
 # Run the bot1
 bot.run(DISCORD_TOKEN)

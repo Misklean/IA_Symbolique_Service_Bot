@@ -1,16 +1,16 @@
-Find if the user wants a book
+Find if the user wants a book: True1 if it is about book recommendation and you can get either an author or deduce a genre, True2 if it is about book recommendation but those are not spectified and False if it has nothing to do with book recommendation
 
 Exemple 1:
 INPUT : "I want a book related to Erin Hunter"
-True
+True1
 
 Exemple 2:
 INPUT : "I like fantasy, comedy and horror books"
-True
+True1
 
 Example 3:
 Input: "I'm interested in historical fiction novels."
-True
+True1
 
 Example 4:
 Input: "I want to go outside"
@@ -18,14 +18,14 @@ False
 
 Example 5:
 Input: "I want to learn coding"
-True
+True1
 Example 6:
 Input: "Can you recommend a good detective story?"
-True
+True1
 
 Example 7:
 Input: "I'm looking for some good science fiction to read."
-True
+True1
 
 Example 8:
 Input: "Let's discuss the latest movies."
@@ -37,7 +37,7 @@ False
 
 Example 10:
 Input: "I need information on software development."
-True
+True1
 
 Example 11:
 Input: "What's the best way to travel to Europe?"
@@ -49,16 +49,27 @@ False
 
 Example 13:
 Input: "Could you help me find some cookbooks?"
-True
+True1
 
 Example 14:
 Input: "Tell me more about the latest technology trends."
 False
 
 Example 15:
-Input: "I'm into thrillers and mystery novels."
-True
+Input: "Give me a book with a red cover"
+True2
 
+Exemple 16:
+Input: "I want a book with 300 chapters"
+True2
+
+Exemple 17:
+Input: "Recommand me a book written by famous people"
+True2
+
+Exemple 18:
+Input: "Give me a book that I will like"
+True2
 +++++
 {{$input}}
 +++++
