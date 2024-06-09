@@ -1,4 +1,5 @@
 import os
+import re
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -38,6 +39,9 @@ kernel.add_service(
 
 genres = []
 
+# Dictionary to track user recommendations
+user_recommendations = {}
+
 ########################################################
 # DEFINE AND LOAD PLUGINS                              #
 ########################################################
@@ -69,7 +73,7 @@ async def get_author_query(input):
         create_author_query_function,
         KernelArguments(input=input)
     )
-    print(query)
+    
     return query
 
 def get_books_by_query(query):
@@ -111,7 +115,9 @@ async def get_preference_type(input):
     
     return str(pref_type)
 
-async def get_book_recommendation(input):
+async def get_book_recommendation(input, user_id):
+    global user_recommendations
+
     pref_type = await get_preference_type(input)
     if pref_type == "AUTHOR":
         query = await get_author_query(input)
@@ -122,10 +128,17 @@ async def get_book_recommendation(input):
     
     books = get_books_by_query(query)
     if len(books) == 0:
-        return "I did not find any book recommendations, please more precise with authors, and borader with genres. <3"
+        return "I did not find any book recommendations, please be more precise with authors, and broader with genres. <3"
+
+    # Filter out already recommended books
+    books = [book for book in books if book not in user_recommendations[user_id]]
+
+    if len(books) == 0:
+        return "NO BOOKS"
+    
     summary = await get_processed_query(books)
 
-    return summary
+    return str(summary)
 
 def get_genres():
     sparql = SPARQLWrapper("https://dbpedia.org/sparql")
@@ -152,6 +165,13 @@ def get_genres():
     
     return genre_labels
 
+def extract_books_from_summary(summary):
+    print(summary)
+    # Regex to find book names in quotes
+    book_pattern = r'"([^"]+)"'
+    books = re.findall(book_pattern, summary)
+    return books
+
 ########################################################
 # SETUP DISCORD CLIENT                                 #
 ########################################################
@@ -173,10 +193,24 @@ async def on_message(message):
     if message.author.bot:
         return
 
+    user_id = message.author.id
+
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
+        # Initialize user in dictionary if not present
+        if user_id not in user_recommendations:
+            user_recommendations[user_id] = []
+
         # Get response from OpenAI with bot personality
-        summary = await get_book_recommendation(message.content)
+        summary = await get_book_recommendation(message.content, user_id)
+
+        # Extract books from summary
+        recommended_books = extract_books_from_summary(summary)
+
+        # Update user recommendations
+        user_recommendations[user_id].extend(recommended_books)
+        print(user_recommendations[user_id])
+
         await message.channel.send(summary)
             
 # Run the bot1

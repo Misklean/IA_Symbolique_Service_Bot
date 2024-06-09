@@ -1,15 +1,60 @@
-YOU HAVE 2 LIST OF TITLES AND A USER MESSAGE OF THE FORMAT:
-user message: I want a action and romance book written by J.K Rowling. Title from DBPedia : [Renegade - Leonard_Carpenter]. Title from google book : ['Point of Betrayal - Don Pendleton', 'Action - Martin Barker', 'Une place à prendre - J. K. Rowling', 'Harry Potter et l’Ordre du Phénix - J.K. Rowling']
+IN THE GIVEN INPUT, TAKE 3 BOOKS AND FOLLOW THIS TEMPLATE FOR EACH OF THEM :
 
-Out of them, pick 3 books that are likely to fit the user and then add 1 that you recommend yourself and source it as GPT
-
-Return then as 
 Title - Author: Title - Author
 Genre : ... 
 Summary : ... (One sentence)
 Why it could fit you : ... (One sentence)
 Source: DBpedia or Google_Book or GPT
 
+THE SUMMARY AND BOOKS NEED TO FIT THE PREFERENCE OF THE USER :
+
+Exemple 1 :
+Input : user : <@1248940569577656352> I want a book about romance, Title from DBPedia : Like Water for Chocolate (novel) - Laura Esquivel, Dead Until Dark - Charlaine Harris, Dead as a Doornail - Charlaine Harris, All Together Dead - Charlaine Harris, Allegiant (novel) - Veronica Roth, Another Day (novel) - David Levithan, April Lady - Georgette Heyer, Arabella (novel) - Georgette Heyer, Hush, Hush - Becca Fitzpatrick, Revolution 2020 - Chetan Bhagat, Days of Blood and Starlight - Laini Taylor. Title from google book : Last Sacrifice - Richelle Mead, Before the Season Ends - Linore Rose Burkard, Mansfield Park - Jane Austen, The Italian Girl - Lucinda Riley, Simple Gifts - Judith McNaught, Jude Deveraux, Spirit Bound - Richelle Mead, Love Only Once - Johanna Lindsey, Above and Beyond - Sandra Brown
+
+Output : 
+
+Title - Author: Like Water for Chocolate - Laura Esquivel
+Genre: Romance, Magical Realism
+Summary: A young woman discovers her emotions influence the food she cooks, affecting those who eat it.
+Why it could fit you: The blend of romance and magical elements creates a unique love story.
+Source: DBpedia
+
+Title - Author: Mansfield Park - Jane Austen
+Genre: Romance, Classic
+Summary: A young girl from a poor family is sent to live with wealthy relatives and finds herself entangled in romantic and social intrigues.
+Why it could fit you: Austen's classic romance offers timeless insights into love and society.
+Source: Google_Book
+
+Title - Author: Hush, Hush - Becca Fitzpatrick
+Genre: Romance, Fantasy
+Summary: A high school student falls in love with a mysterious fallen angel.
+Why it could fit you: The mix of romance and supernatural elements provides a thrilling and passionate story.
+Source: DBpedia
+
+Exemple 2 :
+Input : user :  I'm in the mood for a mystery novel, Title from DBPedia: The Hound of the Baskervilles - Arthur Conan Doyle, The Girl with the Dragon Tattoo - Stieg Larsson, The Big Sleep - Raymond Chandler, Gone Girl - Gillian Flynn, The Da Vinci Code - Dan Brown, The Maltese Falcon - Dashiell Hammett, And Then There Were None - Agatha Christie, Rebecca - Daphne du Maurier, In the Woods - Tana French, The Silent Patient - Alex Michaelides. Title from google book: The Alienist - Caleb Carr, The Woman in White - Wilkie Collins, The No. 1 Ladies' Detective Agency - Alexander McCall Smith, Shutter Island - Dennis Lehane, The Girl on the Train - Paula Hawkins, Big Little Lies - Liane Moriarty, Sharp Objects - Gillian Flynn, Before I Go to Sleep - S.J. Watson, The Secret History - Donna Tartt. Title from GPT: The Reversal - Michael Connelly, The Shadow of the Wind - Carlos Ruiz Zafón, The Couple Next Door - Shari Lapena
+
+Output :
+
+Title - Author: The Hound of the Baskervilles - Arthur Conan Doyle
+Genre: Mystery, Classic
+Summary: Sherlock Holmes investigates the legendary curse of the Baskerville family.
+Why it could fit you: This classic Holmes mystery provides an intriguing blend of suspense and deductive reasoning.
+Source: DBpedia
+
+Title - Author: Shutter Island - Dennis Lehane
+Genre: Mystery, Thriller
+Summary: Two U.S. Marshals investigate the disappearance of a patient from a remote mental hospital.
+Why it could fit you: The dark, twisty plot and psychological tension make for a gripping mystery.
+Source: Google_Book
+
+Title - Author: The Shadow of the Wind - Carlos Ruiz Zafón
+Genre: Mystery, Historical Fiction
+Summary: A boy in post-World War II Barcelona discovers a mysterious book that changes his life.
+Why it could fit you: The richly layered narrative weaves together mystery, romance, and historical intrigue.
+Source: GPT
+
+
 +++++
 {{$input}}
-+++++
++++++ 

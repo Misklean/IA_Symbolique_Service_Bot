@@ -66,7 +66,8 @@ ChatGPT:
 transalte_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="TestingPlugin")
 bookrec_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="BookRecommendationPlugin")
 
-translate_function = transalte_plugin["Translate"]
+create_genre_query_function = bookrec_plugin["CreateGenreQuery"]
+create_author_query_function = bookrec_plugin["CreateAuthorQuery"]
 process_query_function = bookrec_plugin["ProcessQuery"]
 AuthAndGenre = bookrec_plugin["GetAuthorsAndGenre"]
 GiveBackBest = bookrec_plugin["Debate"]
@@ -75,95 +76,30 @@ GiveBackBest = bookrec_plugin["Debate"]
 ########################################################
 # DEFINE FUNCTIONS                                     #
 ########################################################
-# Gets book by genres from google books
-def search_books_on_google_book_by_genre(genres, max_results=10):
-    # Initialize the Google Books API client with your API key
-    api_key = GOOGLE_BOOK_KEY
-    service = build('books', 'v1', developerKey=api_key)
 
-    # Construct the query string with multiple genres
-    query = "+".join([f'subject:{genre}' for genre in genres])
-
-    # Search for books by multiple genres
-    request = service.volumes().list(q=query, maxResults=max_results)
-    response = request.execute()
-
-    # Collect and return book titles and authors
-    book_titles = []
-    for book in response.get('items', []):
-        volume_info = book["volumeInfo"]
-        title = volume_info.get("title", "N/A")
-        authors = ", ".join(volume_info.get("authors", ["N/A"]))
-        book_titles.append(f"{title} - {authors}")
-
-    return book_titles
-
-def search_books_on_google_book_by_author(authors, max_results=10):
-    # Initialize the Google Books API client with your API key
-    api_key = GOOGLE_BOOK_KEY
-    service = build('books', 'v1', developerKey=api_key)
-
-    # Construct the query string with multiple authors
-    query = "+".join([f'inauthor:"{author}"' for author in authors])
-
-    # Search for books by multiple authors
-    request = service.volumes().list(q=query, maxResults=max_results)
-    response = request.execute()
-
-    # Collect and return book titles and authors
-    book_titles = []
-    for book in response.get('items', []):
-        volume_info = book["volumeInfo"]
-        title = volume_info.get("title", "N/A")
-        authors = ", ".join(volume_info.get("authors", ["N/A"]))
-        book_titles.append(f"{title} - {authors}")
-
-    return book_titles
-# Function to get a response from OpenAI with bot personality
-async def get_openai_response(user_message):
-    prompt = f"{BOT_PERSONALITY_PROMPT}\nUser: {user_message}\nChatGPT:"
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": user_message}
-        ],
-        max_tokens=150,
-        temperature=0.7,
-    )
-    return response.choices[0].message.content.strip()
-
-async def help(input):
-    translation = await kernel.invoke(
-        AuthAndGenre,
-        KernelArguments(input=input)
-    )
-
-    return str(translation)
-
-async def FinalAnswer(input):
-    translation = await kernel.invoke(
-        GiveBackBest,
-        KernelArguments(input=input)
-    )
-
-    return str(translation)
-
-
-async def get_translation(input, lang):
-    translation = await kernel.invoke(
-        translate_function,
-        KernelArguments(input=input, lang=lang)
-    )
-
-    return translation
-
-
+async def get_genre_query(input):
     query = await kernel.invoke(
-        create_query_function,
+        create_genre_query_function,
         KernelArguments(input=input, genres=genres)
     )
+    
     return query
+
+async def get_author_query(input):
+    query = await kernel.invoke(
+        create_author_query_function,
+        KernelArguments(input=input)
+    )
+    
+    return query
+
+async def get_processed_query(input):
+    summary = await kernel.invoke(
+        process_query_function,
+        KernelArguments(input=input)
+    )
+    
+    return summary
 
 def get_books_by_query(query):
     # Create a SPARQLWrapper instance
@@ -187,6 +123,101 @@ def get_books_by_query(query):
         books.append(book_title)
     return books
 
+# Gets book by genres from google books
+def search_books_on_google_book_by_genre(user_genres, max_results=10):
+    # Initialize the Google Books API client with your API key
+    api_key = GOOGLE_BOOK_KEY
+    service = build('books', 'v1', developerKey=api_key)
+
+    # Construct the query string with multiple genres
+    query = "+".join([f'subject:{user_genres}' for user_genres in user_genres])
+
+    # Search for books by multiple genres
+    request = service.volumes().list(q=query, maxResults=max_results)
+    response = request.execute()
+
+    # Collect and return book titles and authors
+    book_titles = []
+    for book in response.get('items', []):
+        volume_info = book["volumeInfo"]
+        title = volume_info.get("title", "N/A")
+        authors = ", ".join(volume_info.get("authors", ["N/A"]))
+        book_titles.append(f"{title} - {authors}")
+
+    return book_titles
+
+def search_books_on_google_book_by_author(user_authors, max_results=10):
+    # Initialize the Google Books API client with your API key
+    api_key = GOOGLE_BOOK_KEY
+    service = build('books', 'v1', developerKey=api_key)
+
+    # Construct the query string with multiple authors
+    query = "+".join([f'inauthor:"{user_authors}"' for user_authors in user_authors])
+
+    # Search for books by multiple authors
+    request = service.volumes().list(q=query, maxResults=max_results)
+    response = request.execute()
+
+    # Collect and return book titles and authors
+    book_titles = []
+    for book in response.get('items', []):
+        volume_info = book["volumeInfo"]
+        title = volume_info.get("title", "N/A")
+        authors = ", ".join(volume_info.get("authors", ["N/A"]))
+        book_titles.append(f"{title} - {authors}")
+
+    return book_titles
+
+async def search_books_on_dbpedia_book_by_genre(user_genres):
+    query = await get_genre_query(user_genres)
+    
+    books = get_books_by_query(query)
+    if len(books) == 0:
+        return "I did not find any book recommendations, please be more precise with authors. <3"
+
+    # Filter out already recommended books
+    #books = [book for book in books if book not in user_recommendations[user_id]]
+
+    if len(books) == 0:
+        return "NO BOOKS"
+    
+    summary = await get_processed_query(books)
+
+    return str(summary).split("|")
+
+async def search_books_on_dbpedia_book_by_author(user_authors):
+    query = await get_author_query(user_authors)
+    
+    books = get_books_by_query(query)
+    if len(books) == 0:
+        return "I did not find any book recommendations, please be broader with genres. <3"
+
+    # Filter out already recommended books
+    #books = [book for book in books if book not in user_recommendations[user_id]]
+
+    if len(books) == 0:
+        return "NO BOOKS"
+    
+    summary = await get_processed_query(books)
+
+    return str(summary).split("|")
+
+async def get_author_and_genre(input):
+    translation = await kernel.invoke(
+        AuthAndGenre,
+        KernelArguments(input=input)
+    )
+
+    return str(translation)
+
+async def FinalAnswer(input):
+    translation = await kernel.invoke(
+        GiveBackBest,
+        KernelArguments(input=input)
+    )
+
+    return str(translation)
+
 async def get_processed_query(input):
     summary = await kernel.invoke(
         process_query_function,
@@ -194,32 +225,49 @@ async def get_processed_query(input):
     )
     return summary
 
+async def get_dbpedia_book(user_genres, user_authors):
+    dbpedia_book_titles = []
+    # Search books by genres if not empty
+    if user_genres:
+        dbpedia_book_titles += await search_books_on_dbpedia_book_by_genre(user_genres)
 
+    # Search books by authors if not empty
+    if user_authors:
+        dbpedia_book_titles += await search_books_on_dbpedia_book_by_author(user_authors)
 
-def get_genres():
-    sparql = SPARQLWrapper("https://dbpedia.org/sparql")
-    query = """
-    SELECT ?genre ?genreLabel (COUNT(?book) AS ?bookCount)
-    WHERE {
-    ?book a dbo:Book .
-    ?book dbo:literaryGenre ?genre .
-    ?genre rdfs:label ?genreLabel .
-    FILTER (lang(?genreLabel) = 'en')
-    }
-    GROUP BY ?genre ?genreLabel
-    ORDER BY DESC(?bookCount)
-    LIMIT 50
-    """
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
+    return dbpedia_book_titles
+
+def get_google_book(user_genres, user_authors):
+    google_book_titles = []
+    # Search books by genres if not empty
+    if user_genres:
+        google_book_titles += search_books_on_google_book_by_genre(user_genres, 20)
+
+    # Search books by authors if not empty
+    if user_authors:
+        google_book_titles += search_books_on_google_book_by_author(user_authors, 20)
+
+    return google_book_titles
+
+async def book_recommendation(input):
+    author_and_genre = await get_author_and_genre(input) #Genre : [horror,romance,...], Author : [Steve, Bob,...]
+
+    # Parse genres and authors from the string
+    user_genres = re.findall(r"Genre\s*:\s*\[([^\]]+)\]", author_and_genre)
+    user_authors = re.findall(r"Author\s*:\s*\[([^\]]+)\]", author_and_genre)
     
-    genre_labels = []
-    for result in results["results"]["bindings"]:
-        genre_label = result["genreLabel"]["value"]
-        genre_labels.append(genre_label)
-    
-    return genre_labels
+    google_book_titles = get_google_book(user_genres, user_authors)
+    dbpedia_book_titles = await get_dbpedia_book(user_genres, user_authors)
+
+    dbpedia_titles = ", ".join(dbpedia_book_titles)
+    google_titles = ", ".join(google_book_titles)
+
+    # Format the final answer string
+    final_answer = f"user : {(input)}, Title from DBPedia : {dbpedia_titles}. Title from google book : {google_titles}"
+    print(final_answer)
+    end = await FinalAnswer(final_answer)
+
+    return end
 
 ########################################################
 # SETUP DISCORD CLIENT                                 #
@@ -232,9 +280,6 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-    global genres
-    # Call the function and print the list of genres
-    genres = get_genres()
     print(f'Logged in as {bot.user}!')
 
 @bot.event
@@ -244,40 +289,8 @@ async def on_message(message):
 
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
-        test = await help(message.content) #Genre : [horror,romance,...], Author : [Steve, Bob,...]
-        print(test)
-        # Parse genres and authors from the string
-        genres = re.findall(r"Genre\s*:\s*\[([^\]]+)\]", test)
-        authors = re.findall(r"Author\s*:\s*\[([^\]]+)\]", test)
-        #print(genres)
-        #print(authors)
-        book_titles = []
-        # Search books by genres if not empty
-        if genres:
-            book_titles += search_books_on_google_book_by_genre(genres, 20)
-
-        # Search books by authors if not empty
-        if authors:
-            book_titles += search_books_on_google_book_by_author(authors, 20)
-        print(book_titles)
-        
-        book_titles2 = ["Swamplandia","Sleepwalking Land","Primeval and Other Times"]
-
-        dbpedia_titles = ", ".join(book_titles2)
-        google_titles = ", ".join(book_titles)
-    
-        # Format the final answer string
-        final_answer = f"user : {(message.content)}, Title from DBPedia : {dbpedia_titles}. Title from google book : {google_titles}"
-        print(final_answer)
-        if "bonjour" in message.content.lower():
-            translation = await get_translation(message.content, "French")
-            await message.channel.send(translation)
-        else:
-            # Get response from OpenAI with bot personality
-         #   summary = await get_book_recommendation(message.content)
-          #  await message.channel.send(summary)
-          end = await FinalAnswer(final_answer)
-          await message.channel.send(end)
+        end = await book_recommendation(message.content)
+        await message.channel.send(end)
             
 # Run the bot1
 bot.run(DISCORD_TOKEN)

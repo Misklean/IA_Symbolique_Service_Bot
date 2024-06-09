@@ -1,46 +1,4 @@
-FIND THE AUTHOR RELATED TO THE PREFERENCES SPECIFIED IN THE input
-
-Exemple 1:
-INPUT : "I want a book related to Erin Hunter"
-IMPORTANT INFORMATION : "Erin Hunter"
-
-Example 2:
-Input: "Can you recommend a mystery thriller by Agatha Christie?"
-Important Information: "Agatha Christie"
-
-Example 3:
-Input: "I'd like to read something written by Stephen King."
-Important Information: "Stephen King"
-
-Example 4:
-Input: "Do you have any recommendations from Jane Austen?"
-Important Information: "Jane Austen"
-
-Example 5:
-Input: "Can you find a book by Mark Twain for me?"
-Important Information: "Mark Twain"
-
-Example 6:
-Input: "I'm interested in novels authored by Haruki Murakami."
-Important Information: "Haruki Murakami"
-
-Example 7:
-Input: "Any good reads by Neil Gaiman?"
-Important Information: "Neil Gaiman"
-
-Example 8:
-Input: "Could you recommend something from Isaac Asimov?"
-Important Information: "Isaac Asimov"
-
-Example 9:
-Input: "I'm looking for books by J.K. Rowling."
-Important Information: "J.K. Rowling"
-
-Example 10:
-Input: "Can you suggest some works of George Orwell?"
-Important Information: "George Orwell"
-
-IF YOU FIND JUST A SURNAME, GIVE THE ENTIRE NAME OF THE AUTHOR
+FOR THE AUTHORS GIVEN IN THE INPUT, GIVE THE ENTIRE NAME OF THE AUTHOR
 
 Exemple 1:
 Input : Musso

@@ -1,30 +1,4 @@
-FIND THE IMPORTANT INFORMATION RELATED TO THE PREFERENCES SPECIFIED IN THE input
-
-Exemple 1:
-INPUT : "I want a book related to Erin Hunter"
-IMPORTANT INFORMATION : "Erin Hunter"
-
-Exemple 2:
-INPUT : "I like fantasy, comedy and horror books"
-IMPORTANT INFORMATION : "fantasy, comedy, horror"
-
-Example 3:
-Input: "I'm interested in historical fiction novels."
-Important Information: "historical fiction"
-
-Example 4:
-Input: "Can you recommend a mystery thriller by Agatha Christie?"
-Important Information: "mystery thriller, Agatha Christie"
-
-Example 5:
-Input: "I'm looking for science fiction books with time travel themes."
-Important Information: "science fiction, time travel"
-
-Example 6:
-Input: "I want to read a classic romance novel."
-Important Information: "classic romance"
-
-AFTER FINDING THE IMPORTANT INFORMATION, GIVE THE ONE GENRE IT RELATES TO THE MOST IN THIS LIST:
+FOR EVERY WORDS IN THE GIVEN INPUT, FIND THE GENRE CLOSEST IN MEANING :
 [fantasy, thriller, fiction, comedy, children's literature, non-fiction, mystery, crime, horror, adventure, romance, historical, drama, biography, autobiography, memoir, reference, poetry, essay, travel, anthology, comics, philosophy, religion, history, sagas, western, utopian, dystopian, spy, humor, erotica, musical, anthropology, magic, fairy tale, cookbook, art, dance, crafts, self-help, health, fitness, parenting, education, fashion, architecture, design, photography, film, action]
 
 IF YOU DO NOT FIND A GENRE THAT RELATES ENOUGH, JUST ANSWER "NOT FOUND" AND NOTHING ELSE
@@ -33,7 +7,7 @@ Example 1:
 Input: "I want to learn to code"
 Answer: "Not Found"
 
-AFTER GETTING THE ONE GENRE IT RELATES TO THE MOST, USE THIS TEMPLATE TO CREATE A SPARQL QUERY:
+AFTER GETTING THE GENRES THEY RELATE TO THE MOST, USE THIS TEMPLATE TO CREATE A SPARQL QUERY:
 THE GENRE NEEDS TO BE IN LOWERCASE
 
 ```
