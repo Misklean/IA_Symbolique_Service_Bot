@@ -38,7 +38,14 @@ kernel.add_service(
     )
 )
 
+# Initialize the Google Books API client with your API key
+api_key = GOOGLE_BOOK_KEY
+service = build('books', 'v1', developerKey=api_key)
+
 genres = []
+
+# Dictionary to track user recommendations
+user_recommendations = {}
 
 ########################################################
 # CREATE BOT PERSONNALITY                              #
@@ -125,10 +132,6 @@ def get_books_by_query(query):
 
 # Gets book by genres from google books
 def search_books_on_google_book_by_genre(user_genres, max_results=10):
-    # Initialize the Google Books API client with your API key
-    api_key = GOOGLE_BOOK_KEY
-    service = build('books', 'v1', developerKey=api_key)
-
     # Construct the query string with multiple genres
     query = "+".join([f'subject:{user_genres}' for user_genres in user_genres])
 
@@ -147,10 +150,6 @@ def search_books_on_google_book_by_genre(user_genres, max_results=10):
     return book_titles
 
 def search_books_on_google_book_by_author(user_authors, max_results=10):
-    # Initialize the Google Books API client with your API key
-    api_key = GOOGLE_BOOK_KEY
-    service = build('books', 'v1', developerKey=api_key)
-
     # Construct the query string with multiple authors
     query = "+".join([f'inauthor:"{user_authors}"' for user_authors in user_authors])
 
@@ -173,13 +172,13 @@ async def search_books_on_dbpedia_book_by_genre(user_genres):
     
     books = get_books_by_query(query)
     if len(books) == 0:
-        return "I did not find any book recommendations, please be more precise with authors. <3"
+        return []
 
     # Filter out already recommended books
     #books = [book for book in books if book not in user_recommendations[user_id]]
 
     if len(books) == 0:
-        return "NO BOOKS"
+        return []
     
     summary = await get_processed_query(books)
 
@@ -190,13 +189,13 @@ async def search_books_on_dbpedia_book_by_author(user_authors):
     
     books = get_books_by_query(query)
     if len(books) == 0:
-        return "I did not find any book recommendations, please be broader with genres. <3"
+        return []
 
     # Filter out already recommended books
     #books = [book for book in books if book not in user_recommendations[user_id]]
 
     if len(books) == 0:
-        return "NO BOOKS"
+        return []
     
     summary = await get_processed_query(books)
 
@@ -249,7 +248,9 @@ def get_google_book(user_genres, user_authors):
 
     return google_book_titles
 
-async def book_recommendation(input):
+async def book_recommendation(input, user_id):
+    global user_recommendations
+
     author_and_genre = await get_author_and_genre(input) #Genre : [horror,romance,...], Author : [Steve, Bob,...]
 
     # Parse genres and authors from the string
@@ -259,15 +260,29 @@ async def book_recommendation(input):
     google_book_titles = get_google_book(user_genres, user_authors)
     dbpedia_book_titles = await get_dbpedia_book(user_genres, user_authors)
 
-    dbpedia_titles = ", ".join(dbpedia_book_titles)
-    google_titles = ", ".join(google_book_titles)
+    # Function to extract book titles from the combined title-author string
+    def extract_title(book_with_author):
+        return book_with_author.split(' - ')[0]
+
+    # Create a new list with books that are not in book_titles
+    filtered_google_book_titles = [book for book in google_book_titles if extract_title(book).lower() not in user_recommendations[user_id]]
+    filtered_dbpedia_book_titles = [book for book in dbpedia_book_titles if extract_title(book).lower() not in user_recommendations[user_id]]
+
+    dbpedia_titles = ", ".join(filtered_dbpedia_book_titles)
+    google_titles = ", ".join(filtered_google_book_titles)
 
     # Format the final answer string
     final_answer = f"user : {(input)}, Title from DBPedia : {dbpedia_titles}. Title from google book : {google_titles}"
-    print(final_answer)
     end = await FinalAnswer(final_answer)
 
     return end
+
+def extract_books_from_summary(summary):
+    print(summary)
+    # Regex to find book names after "Title - Author: " and before " - "
+    book_pattern = r'Title - Author: ([^-]+) -'
+    books = re.findall(book_pattern, summary)
+    return books
 
 ########################################################
 # SETUP DISCORD CLIENT                                 #
@@ -289,7 +304,20 @@ async def on_message(message):
 
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
-        end = await book_recommendation(message.content)
+        user_id = message.author.id
+
+        if user_id not in user_recommendations:
+            user_recommendations[user_id] = []
+
+        end = await book_recommendation(message.content, user_id)
+
+        # Extract books from summary
+        recommended_books = extract_books_from_summary(end)
+
+        # Update user recommendations
+        user_recommendations[user_id].extend(book.lower() for book in recommended_books)
+        print(user_recommendations[user_id])
+
         await message.channel.send(end)
             
 # Run the bot1

@@ -9,7 +9,7 @@ Source: DBpedia or Google_Book or GPT
 THE SUMMARY AND BOOKS NEED TO FIT THE PREFERENCE OF THE USER :
 
 Exemple 1 :
-Input : user : <@1248940569577656352> I want a book about romance, Title from DBPedia : Like Water for Chocolate (novel) - Laura Esquivel, Dead Until Dark - Charlaine Harris, Dead as a Doornail - Charlaine Harris, All Together Dead - Charlaine Harris, Allegiant (novel) - Veronica Roth, Another Day (novel) - David Levithan, April Lady - Georgette Heyer, Arabella (novel) - Georgette Heyer, Hush, Hush - Becca Fitzpatrick, Revolution 2020 - Chetan Bhagat, Days of Blood and Starlight - Laini Taylor. Title from google book : Last Sacrifice - Richelle Mead, Before the Season Ends - Linore Rose Burkard, Mansfield Park - Jane Austen, The Italian Girl - Lucinda Riley, Simple Gifts - Judith McNaught, Jude Deveraux, Spirit Bound - Richelle Mead, Love Only Once - Johanna Lindsey, Above and Beyond - Sandra Brown
+Input : user : I want a book about romance, Title from DBPedia : Like Water for Chocolate (novel) - Laura Esquivel, Dead Until Dark - Charlaine Harris, Dead as a Doornail - Charlaine Harris, All Together Dead - Charlaine Harris, Allegiant (novel) - Veronica Roth, Another Day (novel) - David Levithan, April Lady - Georgette Heyer, Arabella (novel) - Georgette Heyer, Hush, Hush - Becca Fitzpatrick, Revolution 2020 - Chetan Bhagat, Days of Blood and Starlight - Laini Taylor. Title from google book : Last Sacrifice - Richelle Mead, Before the Season Ends - Linore Rose Burkard, Mansfield Park - Jane Austen, The Italian Girl - Lucinda Riley, Simple Gifts - Judith McNaught, Jude Deveraux, Spirit Bound - Richelle Mead, Love Only Once - Johanna Lindsey, Above and Beyond - Sandra Brown
 
 Output : 
 
@@ -54,6 +54,8 @@ Summary: A boy in post-World War II Barcelona discovers a mysterious book that c
 Why it could fit you: The richly layered narrative weaves together mystery, romance, and historical intrigue.
 Source: GPT
 
+IF YOU HAVE A RECOMMENDATION FROM CHATGPT TO MAKE, ADD IT TO THE 3 SUMMARIES.
+THIS NEW RECOMMENDATION NEEDS TO BE RELATED TO THE INPUT FROM THE USER
 
 +++++
 {{$input}}
