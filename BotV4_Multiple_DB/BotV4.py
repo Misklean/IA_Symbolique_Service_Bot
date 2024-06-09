@@ -169,38 +169,47 @@ def search_books_on_google_book_by_author(user_authors, max_results=10):
     return book_titles
 
 async def search_books_on_dbpedia_book_by_genre(user_genres):
-    query = await get_genre_query(user_genres)
-    
-    books = get_books_by_query(query)
-    if len(books) == 0:
+    try:
+        query = await get_genre_query(user_genres)
+        
+        books = get_books_by_query(query)
+        if len(books) == 0:
+            return []
+
+        # Filter out already recommended books
+        #books = [book for book in books if book not in user_recommendations[user_id]]
+
+        if len(books) == 0:
+            return []
+        
+        summary = await get_processed_query(books)
+
+        return str(summary).split("|")
+    except Exception as e:
+        print(f"Error in search_books_on_dbpedia_book_by_genre: {e}")
         return []
-
-    # Filter out already recommended books
-    #books = [book for book in books if book not in user_recommendations[user_id]]
-
-    if len(books) == 0:
-        return []
-    
-    summary = await get_processed_query(books)
-
-    return str(summary).split("|")
 
 async def search_books_on_dbpedia_book_by_author(user_authors):
-    query = await get_author_query(user_authors)
-    
-    books = get_books_by_query(query)
-    if len(books) == 0:
+    try:
+        query = await get_author_query(user_authors)
+        
+        books = get_books_by_query(query)
+        if len(books) == 0:
+            return []
+
+        # Filter out already recommended books
+        #books = [book for book in books if book not in user_recommendations[user_id]]
+
+        if len(books) == 0:
+            return []
+        
+        summary = await get_processed_query(books)
+
+        return str(summary).split("|")
+    except Exception as e:
+        print(f"Error in search_books_on_dbpedia_book_by_author: {e}")
         return []
 
-    # Filter out already recommended books
-    #books = [book for book in books if book not in user_recommendations[user_id]]
-
-    if len(books) == 0:
-        return []
-    
-    summary = await get_processed_query(books)
-
-    return str(summary).split("|")
 
 async def get_author_and_genre(input):
     translation = await kernel.invoke(
