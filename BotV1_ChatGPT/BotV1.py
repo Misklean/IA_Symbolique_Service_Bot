@@ -51,7 +51,7 @@ async def on_message(message):
     # Check if the bot is tagged in the message
     if bot.user in message.mentions:
         response_text = await get_openai_response(message.content)
-        await message.channel.send(response_text)
+        await message.channel.send("Bot Number 1: \n" + response_text)
 
 # Run the bot
 bot.run(DISCORD_TOKEN)

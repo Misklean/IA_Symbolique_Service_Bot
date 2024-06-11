@@ -364,7 +364,7 @@ async def on_message(message):
                 end = "I will need more details to give you a book recommendation. Please provide me with genres or authors you like. Or a summary of what you are looking for."
             else:
                 end = "I am sorry, I am not able to help you with that. I a a book recommender bot."
-        await message.channel.send("Reply to: "+ message.author.name + "\n"+ end)
+        await message.channel.send("Bot Number 1: \n" + "Reply to: "+ message.author.name + "\n"+ end)
             
 # Run the bot1
 bot.run(DISCORD_TOKEN)
