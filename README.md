@@ -12,7 +12,6 @@ Ensure you have Python 3.8 or later installed. Then, install the required librar
 
 ```bash
 pip install discord.py python-dotenv openai semantic-kernel sparqlwrapper google-api-python-client
-
 ```
 
 ### Step 2: Create a `.env` File
@@ -21,26 +20,21 @@ Create a `.env` file in your project directory with the following content:
 
 ```plaintext
 DISCORD_TOKEN=yourDiscordToken
-PROJECT_ID=a-novel-a-day-boredom-at--ogfn
-GOOGLE_APPLICATION_CREDENTIALS=path/to/dialogflow-key.json
 OPENAI_API_KEY=your_openai_api_key
+GOOGLE_book_API_KeY=GoogleBooksAPIKey
 ```
 
-Replace `yourDiscordToken` with your actual Discord bot token and `path/to/dialogflow-key.json` with the path to your Dialogflow service account JSON key file.
+Replace all those fields with your own keys.
 
-### Step 3: Save the Dialogflow Key File
-
-Save the JSON key data you received from Google Cloud into a file named `dialogflow-key.json` and place it in the specified path in your `.env` file.
-
-### Step 4: Run the Bot
+### Step 3: Run the Bot
 
 To run your bot, execute the `main.py` script:
 
 ```bash
-python main.py
+python3 BotV4_Multiple_DB/BotV4.py
 ```
 
-### Step 5: Communicate with the Bot
+### Step 4: Communicate with the Bot
 
 To interact with your bot, send messages in any channel where the bot is present by tagging the bot in your message. For example:
 
