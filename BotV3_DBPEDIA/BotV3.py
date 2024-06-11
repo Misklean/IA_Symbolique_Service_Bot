@@ -211,7 +211,7 @@ async def on_message(message):
         user_recommendations[user_id].extend(recommended_books)
         print(user_recommendations[user_id])
 
-        await message.channel.send("Bot Number 1: \n" + summary)
+        await message.channel.send("Bot Number 3: \n" + summary)
             
 # Run the bot1
 bot.run(DISCORD_TOKEN)
