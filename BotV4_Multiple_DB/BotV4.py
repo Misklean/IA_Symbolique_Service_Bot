@@ -168,6 +168,27 @@ def search_books_on_google_book_by_author(user_authors, max_results=10):
 
     return book_titles
 
+def search_books_on_google_books_by_author_and_genre(user_authors, user_genres, max_results=10):
+    # Construct the query string with both authors and genres
+    author_query = " ".join([f'inauthor:"{author}"' for author in user_authors])
+    genre_query = " ".join([f'subject:"{genre}"' for genre in user_genres])
+    combined_query = f'{author_query} {genre_query}'
+
+    # Search for books by both authors and genres
+    request = service.volumes().list(q=combined_query, maxResults=max_results)
+    response = request.execute()
+
+    # Collect and return book titles and authors
+    book_titles = []
+    for book in response.get('items', []):
+        volume_info = book["volumeInfo"]
+        title = volume_info.get("title", "N/A")
+        authors = ", ".join(volume_info.get("authors", ["N/A"]))
+        book_titles.append(f"{title} - {authors}")
+
+    return book_titles
+
+
 async def search_books_on_dbpedia_book_by_genre(user_genres):
     try:
         query = await get_genre_query(user_genres)
@@ -257,13 +278,15 @@ async def get_dbpedia_book(user_genres, user_authors):
 def get_google_book(user_genres, user_authors):
     google_book_titles = []
     # Search books by genres if not empty
-    if user_genres:
+    if user_genres and not user_authors:
         google_book_titles += search_books_on_google_book_by_genre(user_genres, 20)
 
     # Search books by authors if not empty
-    if user_authors:
+    if user_authors and not user_genres:
         google_book_titles += search_books_on_google_book_by_author(user_authors, 20)
 
+    if user_authors and user_genres:
+        google_book_titles += search_books_on_google_books_by_author_and_genre(user_authors, user_genres, 40)
     return google_book_titles
 
 async def book_recommendation(input, user_id):
