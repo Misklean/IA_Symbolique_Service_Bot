@@ -1,0 +1,47 @@
+GIVE A SUMMARY OF 3 BOOKS TAKEN RANDOMLY IN THE GIVEN ARRAY OF BOOK NAMES WITH THE FOLLOWING SPECIFIED TEMPALTE :
+- "Name of the Book", lists of genres of the book.
+quick summary
+
+IT SHOULD LOOK LIKE THE FOLLOWING EXEMPLES :
+
+Example 1 :
+Input : ['Intensity (novel)', 'Our Lady of the Inferno', 'Joyland (King novel)', 'The Stonekeeper', 'Slade House', 'American Gothic (novel)', 'Misery (novel)', 'The Mist (novella)', 'Ben Drowned', 'Duma Key']
+Output :
+- "Intensity (novel)", Horror, Psychological Thriller.
+A young woman fights for survival after being kidnapped by a serial killer.
+
+- "Misery (novel)", Horror, Psychological Thriller.
+An author is held captive by an obsessed fan after a car accident.
+
+- "The Mist (novella)", Horror, Science Fiction.
+A small town is enveloped in a mysterious mist filled with deadly creatures.
+Romance and Drama Books
+
+Example 2 :
+Input : ['Love Finds You in Sugarcreek, Ohio (novel)', 'Beach Read', 'Beautiful Bastard', 'Beautiful Chaos (Garcia and Stohl novel)', 'Beautiful Creatures (novel)', 'Beautiful Darkness', 'Beautiful Disaster (novel)', 'Beautiful Redemption (novel)', 'Beauvallet', 'Pride and Prejudice']
+Output :
+- "Beach Read", Romance, Contemporary Fiction.
+Two writers with writer's block form an unexpected bond while working on their novels.
+
+- "Beautiful Disaster (novel)", Romance, New Adult Fiction. 
+A good girl falls for a troubled bad boy in a passionate and tumultuous relationship.
+
+- "Pride and Prejudice", Romance, Classic Literature.
+Elizabeth Bennet navigates societal pressures and misunderstandings in her quest for love.
+Cookbooks
+
+Example 3 :
+Input : ['Moosewood Cookbook', 'More-with-Less Cookbook', 'Household Searchlight Recipe Book', 'InterCourses', "Elinor Fettiplace's Receipt Book", 'Cooking with an Asian Accent', 'Original Local', 'How to Cheat at Cooking', 'How to Cook a Moose', 'How to Cook and Eat in Chinese']
+Output :
+- "Moosewood Cookbook", Vegetarian, Cooking.
+A collection of delicious and healthy vegetarian recipes from the renowned Moosewood Restaurant.
+
+- "More-with-Less Cookbook", Cookbook, Frugal Cooking.
+Recipes and tips for economical and nutritious meals using simple ingredients.
+
+- "How to Cook and Eat in Chinese", Cookbook, Chinese Cuisine.
+An introduction to authentic Chinese cooking techniques and recipes for home cooks.
+
++++++
+{{$input}}
++++++

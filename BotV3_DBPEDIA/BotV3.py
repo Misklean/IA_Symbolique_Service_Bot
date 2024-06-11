@@ -52,7 +52,7 @@ bookrec_plugin = kernel.add_plugin(parent_directory="plugins", plugin_name="Book
 translate_function = transalte_plugin["Translate"]
 create_genre_query_function = bookrec_plugin["CreateGenreQuery"]
 create_author_query_function = bookrec_plugin["CreateAuthorQuery"]
-process_query_function = bookrec_plugin["ProcessQuery"]
+process_query_function = bookrec_plugin["ProcessQueryFinalSummary"]
 genre_or_author_function = bookrec_plugin["GenreOrAuthor"]
 
 ########################################################
@@ -125,7 +125,7 @@ async def get_book_recommendation(input, user_id):
         query = await get_genre_query(input)
     else:
         return "Please only talk about Books with me <3"
-    
+
     books = get_books_by_query(query)
     if len(books) == 0:
         return "I did not find any book recommendations, please be more precise with authors, and broader with genres. <3"

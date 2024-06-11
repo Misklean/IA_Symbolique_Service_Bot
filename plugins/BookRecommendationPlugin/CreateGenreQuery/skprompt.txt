@@ -17,7 +17,7 @@ WHERE {
   ?book dbo:literaryGenre ?genre .
   ?genre rdfs:label ?genreLabel .
   ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "REPLACE WITH GENRE TO BE FOUND"))
+  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), LCASE("REPLACE WITH GENRE TO BE FOUND")))
 }
 LIMIT 50
 ```
@@ -34,7 +34,7 @@ WHERE {
   ?book dbo:literaryGenre ?genre .
   ?genre rdfs:label ?genreLabel .
   ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Children's Literature"))
+  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), LCASE("children's literature")))
 }
 LIMIT 50
 
@@ -47,7 +47,7 @@ WHERE {
   ?book dbo:literaryGenre ?genre .
   ?genre rdfs:label ?genreLabel .
   ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), "Horror"))
+  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && CONTAINS(LCASE(?genreLabel), LCASE("horror")))
 }
 LIMIT 50
 
@@ -60,7 +60,7 @@ WHERE {
   ?book dbo:literaryGenre ?genre .
   ?genre rdfs:label ?genreLabel .
   ?book rdfs:label ?title .
-  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && (CONTAINS(LCASE(?genreLabel), "GENRE 1") || CONTAINS(LCASE(?genreLabel), "GENRE 2")))
+  FILTER (lang(?genreLabel) = 'en' && lang(?title) = 'en' && (CONTAINS(LCASE(?genreLabel), LCASE("GENRE 1")) || CONTAINS(LCASE(?genreLabel), LCASE("GENRE 2"))))
 }
 LIMIT 50
 ```
